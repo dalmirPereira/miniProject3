@@ -16,15 +16,16 @@ const formReducer = (state, action) => {
 
 const initialFormState = {
 	username: "",
-	firstname: "",
-	lastname: "",
+	firstName: "",
+	lastName: "",
 	password: "",
+	email: "",
 	repassword: "",
 };
 
 export default function SignupForm() {
 	const [formData, dispatch] = useReducer(formReducer, initialFormState);
-	const { login } = useAuth();
+	//const { login } = useAuth();
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -35,53 +36,72 @@ export default function SignupForm() {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const { username, firstname, lastname, password, repassword } = formData;
+
+		const missingFields = Object.entries(formData)
+        .filter(([key, value]) => !value || value.trim() === '')
+        .map(([key]) => key);
+
+		if (missingFields.length > 0) {
+			alert(`The following fields are required and missing: ${missingFields.join(', ')}`);
+			return;
+		}
+
+		const { username, firstName, lastName, email, password, repassword } = formData;
 
 		if (password !== repassword) {
 			alert("Passwords do not match.");
 			return;
 		}
-		// try{
-		//     const response = await fetch("http://localhost:3000/api/signup",{
-		//     method:"POST",
-		//     headers:{
-		//         "content-Type": "applicatiion/json",
 
-		//     },
-		//     body:JSON.stringify({
-		//         username,
-		//         firstname,
-		//         lastname,
-		//         password,
-		//     })
-		// })
-		// if(!response.ok){
-		//     cons errorData= await.response.json()
-		//     throw new Error(errorData.message||"Signup failed!")
 
-		// }
-		const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-		const userExists = existingUsers.some((user) => user.username === username);
+//--------------------------------------------- REGISTER API CALL ---------------------------------------------------------------
+		try{
+		    const response = await fetch("http://localhost:3000/register",{
+				method:"POST",
+				headers:{
+					"content-Type": "application/json",
 
-		if (userExists) {
-			alert("Username already taken.");
-			return;
+				},
+				body:JSON.stringify({
+					username,
+					firstName,
+					lastName,
+					email,
+					password,
+				})
+			})
+
+			if(!response.ok){
+				const errorData= await response.json()
+				throw new Error(errorData.message||"Signup failed!")
+
+			}
+
+			// const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+			// const userExists = existingUsers.some((user) => user.username === username);
+
+			// if (userExists) {
+			// 	alert("Username already taken.");
+			// 	return;
+			// }
+
+			// const newUser = { username, firstName, lastName, password };
+			// localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
+
+			// console.log(username, firstName, lastName);
+			// login(username);
+			alert("Signup successful!");
+			navigate("/login");
+
+			} catch(error) {
+				console.error("Signup error", error)
+				alert("Signup failed: " + error.message)
+			}
 		}
+//---------------------------------------------------------------------------------------------------------------------------
 
-		const newUser = { username, firstname, lastname, password };
-		localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
-
-		console.log(username, firstname, lastname);
-		login(username);
-		alert("Signup successful!");
-		navigate("/");
-	};
-	// catch(error){
-	//     console.error("Signup error", error)
-	//     alert("Signup failed: " +error.message)
-	// }
 
 	const formField = (label, name, type = "text") => (
 		<Box display="flex" alignItems="center" mb={2}>
@@ -102,8 +122,9 @@ export default function SignupForm() {
 	return (
 		<Box component="form" onSubmit={handleSubmit} noValidate>
 			{formField("Username:", "username")}
-			{formField("First Name:", "firstname")}
-			{formField("Last Name:", "lastname")}
+			{formField("First Name:", "firstName")}
+			{formField("Last Name:", "lastName")}
+			{formField("Email:", "email")}
 			{formField("Password:", "password", "password")}
 			{formField("Retype Password:", "repassword", "password")}
 

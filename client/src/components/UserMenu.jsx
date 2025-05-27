@@ -4,7 +4,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../contexts/CartContext";
+// import { useCart } from "../contexts/CartContext";
 import CartMenu from "./CartMenu";
 
 export default function UserMenu() {

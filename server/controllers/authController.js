@@ -9,17 +9,26 @@ const jwt = require('jsonwebtoken');
 
 const handleLogin = async (req, res) => {
     //get user and password form client
-    const { username, password } = req.body;
-    
+    const { identifier, password } = req.body;
+
     //check if they existe
-    if (!username || !password) return res.status(400).json({ 'message': 'Username and password are required.' });
+    if (!identifier || !password) return res.status(400).json({ 'message': 'Username and password are required.' });
     
     //find the user in our db:
-    const info = { username: username };
+    let info = {};  
+   
+    if (identifier.includes("@")) {
+        info = { email: identifier };
+    } else {
+        info = { username: identifier };
+    }
+
+    //console.log("info: ", info)
+
     const foundUser = await findUser(info);  
     
     //if username exists
-    if (!foundUser) return res.sendStatus(401); 
+    if (!foundUser) return res.status(401).json({ message: 'Invalid username or email.' });; 
     //if user name found then compare the password 
     const match = await bcrypt.compare(password, foundUser.password);
 
@@ -63,7 +72,7 @@ const handleLogin = async (req, res) => {
         res.json({ accessToken });
         
     } else {
-        res.sendStatus(401);
+        res.status(401).json({ message: 'Invalid Password.' });
     }
 }
 

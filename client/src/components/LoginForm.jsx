@@ -2,34 +2,72 @@ import React, { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { jwtDecode } from "jwt-decode";
+
 
 const LoginForm = () => {
+
+	const { setAuth } = useAuth();
+	
 	const [credentials, setCredentials] = useState({
 		identifier: "",
 		password: "",
 	});
-	const { login } = useAuth();
+	
+	//const { login } = useAuth();
 	const navigate = useNavigate();
-	console.log(login);
+	//console.log(login);
 	const handleChange = (e) => {
 		setCredentials({ ...credentials, [e.target.name]: e.target.value });
 	};
+	
+	const handleLogin = async (e) => {
 
-	const handleLogin = (e) => {
 		e.preventDefault();
+
+		
+
 		const { identifier, password } = credentials;
 
-		if (identifier === "admin" && password === "Password1") {
-			login("admin");
-			alert("Login successful as Admin!");
-			navigate("/");
-		} else if (identifier === "member" && password === "Password1") {
-			login("member");
-			alert("Login successful as Member!");
-			navigate("/");
-		} else {
-			alert("Invalid credentials");
+		try{
+			const response = await fetch("http://localhost:3000/auth",{
+				method:"POST",
+				headers:{
+					"content-Type": "application/json",
+				},
+				body:JSON.stringify({
+					identifier,
+					password
+				})
+			})
+
+			const data = await response.json();
+
+			if (response.ok) {
+				
+				const decoded = jwtDecode(data.accessToken);
+				const username = decoded.UserInfo.username;
+				const roles = decoded.UserInfo.roles;
+
+				setAuth({
+					username,
+					roles,
+					accessToken: data.accessToken
+				});
+				
+				alert(`Welcome ${username}`);
+				navigate('/');
+			} else {
+				alert(data.message || "Login failed");
+			}
+
+		} catch (error) {
+			
+			console.error("Signup error", error)
+			alert("Signup failed: " + error.message)
 		}
+
+		
 	};
 
 	return (

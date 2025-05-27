@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Button, Divider, Stack, Drawer } from "@mui/material";
-import { useCart } from "../contexts/CartContext";
+//import { useCart } from "../contexts/CartContext";
 
 export default function CartMenu({ open, onClose }) {
 	const { cartItems, dispatch } = useCart();
