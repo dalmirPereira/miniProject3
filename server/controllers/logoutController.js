@@ -1,11 +1,6 @@
-const usersDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) { this.users = data }
-}
+//Services to access DB
+const { findUser, updateUser } = require('../services/userService')
 
-
-const fsPromises = require('fs').promises; //not integrated mongol (in case we need to work  with json files) 
-const path = require('path');
 
 const handleLogout = async (req, res) => {
     //check if the cookies existe
@@ -17,22 +12,19 @@ const handleLogout = async (req, res) => {
     const refreshToken = cookies.jwt;
     
     //find the user in our db:
-    const foundUser = usersDB.users.find(person => person.refreshToken === refreshToken);
+    info = { refreshToken };
+    const foundUser = await findUser(info);
     
-    //if unauthorize
+    //if not found
     if (!foundUser) {
         res.clearCookie('jwt', { httpOnly: true });
         return res.sendStatus(204);
     }
     
     //Delete refreshToken in db
-    const otherUsers = usersDB.users.filter(person => person.refreshToken !== foundUser.refreshToken);
-    const currentUser = {...foundUser, refreshToken: ''};
-    usersDB.setUsers([...otherUsers, currentUser]);
-    await fsPromises.writeFile(
-        path.join(__dirname, '..','model', 'user.json'),
-        JSON.stringify(usersDB.users)
-    )
+    foundUser.refreshToken = '';
+    const result = await updateUser(foundUser)
+    console.log(result);
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true}); //secure: true - only serves on https
     res.sendStatus(204);

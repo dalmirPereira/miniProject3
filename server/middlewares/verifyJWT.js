@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const verifyJWT = async (req, res, next) => {
 
@@ -12,7 +11,7 @@ const verifyJWT = async (req, res, next) => {
     try {
         const decoded = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        req.user = decoded.UserInfo.username;
+        req.username = decoded.UserInfo.username;
         req.roles = decoded.UserInfo.roles
         
         next();
