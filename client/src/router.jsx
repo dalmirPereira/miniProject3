@@ -8,10 +8,8 @@ import SignupPage from "./pages/SignupPage";
 import ContactUsPage from "./pages/ContactPage";
 import BooksPage from "./pages/BooksPage";
 import AddBookPage from "./pages/AddBookPage";
-import { useAuth } from "./contexts/AuthContext";
 
 export default function AppRouter() {
-	const { userRole, isAuthenticated } = useAuth();
 	//console.log(isAuthenticated);
 	return (
 		<BrowserRouter>
@@ -20,11 +18,11 @@ export default function AppRouter() {
 				<Route path="/" element={<HomePage />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
-				{/*<Route path="/books" element={<BooksPage />} />
+				<Route path="/books" element={<BooksPage />} />
 				<Route path="/contactus" element={<ContactUsPage />} />
-				{userRole === "admin" && (
+				{/* {userRole === "admin" && (
 					<Route path="/admin/addbooks" element={<AddBookPage />} />
-				)}*/}
+				)} */}
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 			<Footer></Footer>

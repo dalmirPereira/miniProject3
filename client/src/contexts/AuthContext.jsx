@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 	//authentification state/context that cares: username, roles, accesstoken
 	const [auth, setAuth] = useState({});
-	
+
 	// const [userRole, setUserRole] = useState(() => {
 	// 	return localStorage.getItem("userRole") || "guest";
 	// });
