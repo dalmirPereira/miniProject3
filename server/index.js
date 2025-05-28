@@ -59,7 +59,9 @@ app.use('/logout', require('./routes/logoutRoute'));
 
 //app.use(verifyJWT);
 //app.use('/dashboard', require('./routes/dashboardRoute'));
-//app.use('/admin', veryfyRoles(ROLES_LIST.Admin) require('./routes/adminRoute'));
+//app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/bookRoutes'));
+app.use('/admin', require('./routes/bookRoutes'));
+
 
 //custom error handler
 app.use(errorHandler);
