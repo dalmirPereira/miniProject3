@@ -8,16 +8,23 @@ import {
 	Button,
 } from "@mui/material";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 
 export default function BookCard({ book }) {
-	const { userRole, isAuthenticated } = useAuth();
-	console.log(isAuthenticated);
-	console.log("useRole:", userRole);
+	const { userRole } = useAuth();
+	const { dispatch } = useCart();
+	// console.log("useRole:", userRole);
 
 	const handleClick = (e) => {
 		e.preventDefault();
 		alert("Login to borrow book");
 	};
+
+	const handleBorrow = () => {
+		dispatch({ type: "addToCartT", book });
+		alert(`"${book.title}" added to your borrow cart.`);
+	};
+
 	return (
 		<Card sx={{ width: 250, mb: 3 }}>
 			<CardMedia
@@ -58,7 +65,11 @@ export default function BookCard({ book }) {
 
 				{userRole === "member" && (
 					<Box textAlign={"end"}>
-						<Button variant="outlined" sx={{ mt: 1, backgroundColor: "white" }}>
+						<Button
+							variant="outlined"
+							sx={{ mt: 1, backgroundColor: "white" }}
+							onClick={handleBorrow}
+						>
 							Borrow
 						</Button>
 					</Box>

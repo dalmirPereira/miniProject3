@@ -42,10 +42,40 @@ export default function AddBookForm() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// Here you can send formBook to backend
-		console.log("Book added:", formBook);
+
+		//-------------------------------------------Add new book to API------------------------------------------------------
+
+		// try {
+		// 	const res = await fetch("http://localhost:5000/api/books", {
+		// 		method: "POST",
+		// 		headers: {
+		// 			"Content-Type": "application/json",
+		// 		},
+		// 		body: JSON.stringify({
+		// 			title: formBook.title,
+		// 			author: formBook.author,
+		// 			description: formBook.description,
+		// 			ISBN: formBook.isbn,
+		// 			yearPublished: parseInt(formBook.yearPublished),
+		// 			pages: parseInt(formBook.pages),
+		// 			bookCover: formBook.coverUrl,
+		// 		}),
+		// 	});
+
+		// 	if (!res.ok) {
+		// 		throw new Error("Failed to add book");
+		// 	}
+
+		//-------------------------------------------------------------------------------------------------
+
+		// console.log("Book added:", formBook);
 		alert("Book added successfully!");
 		dispatch({ type: "Reset" });
+
+		// } catch (err) {
+		// 	console.error(err);
+		// 	alert("Error adding book. Please try again.");
+		// }
 	};
 
 	const formField = (label, name, type = "text", multiline = false) => (

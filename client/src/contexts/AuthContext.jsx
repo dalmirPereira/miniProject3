@@ -1,30 +1,32 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-	//authentification state/context that cares: username, roles, accesstoken
-	const [auth, setAuth] = useState({});
+	const [auth, setAuth] = useState(() => {
+		const stored = localStorage.getItem("auth");
+		return stored ? JSON.parse(stored) : {};
+	});
 
-	// const [userRole, setUserRole] = useState(() => {
-	// 	return localStorage.getItem("userRole") || "guest";
-	// });
+	useEffect(() => {
+		if (auth?.accessToken) {
+			localStorage.setItem("auth", JSON.stringify(auth));
+		} else {
+			localStorage.removeItem("auth");
+		}
+	}, [auth]);
 
-	// useEffect(() => {
-	// 	localStorage.setItem("userRole", userRole);
-	// });
+	const logout = () => setAuth({});
 
-	// const login = (role = "member") => setUserRole(role);
-
-	// const logout = () => {
-	// 	localStorage.removeItem("userRole");
-	// 	setUserRole("guest");
-	// };
-
-	// const isAuthenticated = userRole !== "guest";
+	//define roles
+	const userRole = auth?.roles?.includes(5150)
+		? "admin"
+		: auth?.roles?.includes(2001)
+		? "member"
+		: "guest";
 
 	return (
-		<AuthContext.Provider value={{ auth, setAuth }}>
+		<AuthContext.Provider value={{ auth, setAuth, logout, userRole }}>
 			{children}
 		</AuthContext.Provider>
 	);

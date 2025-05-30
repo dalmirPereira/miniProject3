@@ -4,47 +4,39 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { jwtDecode } from "jwt-decode";
 
-
-const LoginForm = () => {
-
+export default function LoginForm() {
 	const { setAuth } = useAuth();
-	
+	const navigate = useNavigate();
+
 	const [credentials, setCredentials] = useState({
 		identifier: "",
 		password: "",
 	});
-	
-	//const { login } = useAuth();
-	const navigate = useNavigate();
-	//console.log(login);
+
 	const handleChange = (e) => {
 		setCredentials({ ...credentials, [e.target.name]: e.target.value });
 	};
-	
+
 	const handleLogin = async (e) => {
-
 		e.preventDefault();
-
-		
 
 		const { identifier, password } = credentials;
 
-		try{
-			const response = await fetch("http://localhost:3000/auth",{
-				method:"POST",
-				headers:{
+		try {
+			const response = await fetch("http://localhost:3000/auth", {
+				method: "POST",
+				headers: {
 					"content-Type": "application/json",
 				},
-				body:JSON.stringify({
+				body: JSON.stringify({
 					identifier,
-					password
-				})
-			})
+					password,
+				}),
+			});
 
 			const data = await response.json();
 
 			if (response.ok) {
-				
 				const decoded = jwtDecode(data.accessToken);
 				const username = decoded.UserInfo.username;
 				const roles = decoded.UserInfo.roles;
@@ -52,22 +44,17 @@ const LoginForm = () => {
 				setAuth({
 					username,
 					roles,
-					accessToken: data.accessToken
+					accessToken: data.accessToken,
 				});
-				
 				alert(`Welcome ${username}`);
-				navigate('/');
+				navigate("/");
 			} else {
 				alert(data.message || "Login failed");
 			}
-
 		} catch (error) {
-			
-			console.error("Signup error", error)
-			alert("Signup failed: " + error.message)
+			console.error("Signup error", error);
+			alert("Signup failed: " + error.message);
 		}
-
-		
 	};
 
 	return (
@@ -98,6 +85,4 @@ const LoginForm = () => {
 			</Button>
 		</Box>
 	);
-};
-
-export default LoginForm;
+}

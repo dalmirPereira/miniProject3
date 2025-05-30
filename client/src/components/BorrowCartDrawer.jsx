@@ -1,18 +1,48 @@
 import React from "react";
 import { Box, Typography, Button, Divider, Stack, Drawer } from "@mui/material";
-//import { useCart } from "../contexts/CartContext";
+import { useCart } from "../contexts/CartContext";
 
-export default function CartMenu({ open, onClose }) {
+export default function BorrowCartDrawer({ open, onClose }) {
 	const { cartItems, dispatch } = useCart();
 
 	const handleRemove = (isbn) => {
-		dispatch({ type: "REMOVE_FROM_CART", isbn });
+		dispatch({ type: "removeFromCart", isbn });
 	};
 
 	const handleConfirm = () => {
+		//----------------------------handle borrow data to API-------------------------------------------
+
+		// if (!userId) {
+		// 	alert("User not authenticated.");
+		// 	return;
+		// }
+
+		// try {
+		// 	const res = await fetch("http://localhost:5000/api/borrow", {
+		// 		method: "POST",
+		// 		headers: {
+		// 			"Content-Type": "application/json",
+		// 		},
+		// 		body: JSON.stringify({
+		// 			userId, // or username
+		// 			books: cartItems.map(({ ISBN, title }) => ({ ISBN, title })),
+		// 		}),
+		// 	});
+
+		// 	if (!res.ok) {
+		// 		throw new Error("Failed to submit borrow request.");
+		// 	}
+
+		//-------------------------------------------------------------------------------------------------
+
 		alert("Books borrowed successfully!");
-		dispatch({ type: "CLEAR_CART" });
+		dispatch({ type: "clearCart" });
 		onClose();
+
+		// } catch (err) {
+		// 	console.error(err);
+		// 	alert("Error borrowing books. Please try again.");
+		// }
 	};
 
 	return (
