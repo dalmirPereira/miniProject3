@@ -2,7 +2,7 @@ import { Typography, Box, Container, Card, CardContent } from "@mui/material";
 import Footer from "../components/Footer";
 import CarouselImage from "../components/CarouselImage";
 
-const HomePage = () => {
+export default function HomePage() {
 	return (
 		<Box sx={{ backgroundColor: "#f8d8b6", minHeight: "100vh" }}>
 			{/* Main Content */}
@@ -62,6 +62,4 @@ const HomePage = () => {
 			</Container>
 		</Box>
 	);
-};
-
-export default HomePage;
+}

@@ -7,6 +7,7 @@ import {
 	Typography,
 	Paper,
 } from "@mui/material";
+import { useBooks } from "../contexts/BookContext";
 
 const initialBookState = {
 	title: "",
@@ -31,6 +32,7 @@ const formReducer = (state, action) => {
 
 export default function AddBookForm() {
 	const [formBook, dispatch] = useReducer(formReducer, initialBookState);
+	const { addBook } = useBooks;
 
 	const handleChange = (e) => {
 		dispatch({
@@ -40,42 +42,26 @@ export default function AddBookForm() {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		//-------------------------------------------Add new book to API------------------------------------------------------
+		const newBook = {
+			title: formBook.title,
+			author: formBook.author,
+			description: formBook.description,
+			ISBN: formBook.isbn,
+			yearPublished: parseInt(formBook.yearPublished),
+			pages: parseInt(formBook.pages),
+			bookCover: formBook.coverUrl,
+		};
 
-		// try {
-		// 	const res = await fetch("http://localhost:5000/api/books", {
-		// 		method: "POST",
-		// 		headers: {
-		// 			"Content-Type": "application/json",
-		// 		},
-		// 		body: JSON.stringify({
-		// 			title: formBook.title,
-		// 			author: formBook.author,
-		// 			description: formBook.description,
-		// 			ISBN: formBook.isbn,
-		// 			yearPublished: parseInt(formBook.yearPublished),
-		// 			pages: parseInt(formBook.pages),
-		// 			bookCover: formBook.coverUrl,
-		// 		}),
-		// 	});
-
-		// 	if (!res.ok) {
-		// 		throw new Error("Failed to add book");
-		// 	}
-
-		//-------------------------------------------------------------------------------------------------
-
-		// console.log("Book added:", formBook);
-		alert("Book added successfully!");
-		dispatch({ type: "Reset" });
-
-		// } catch (err) {
-		// 	console.error(err);
-		// 	alert("Error adding book. Please try again.");
-		// }
+		const result = await addBook(newBook);
+		if (result.success) {
+			alert("Book added successfully!");
+			dispatch({ type: "Reset" });
+		} else {
+			alert("Failed to add book: " + result.message);
+		}
 	};
 
 	const formField = (label, name, type = "text", multiline = false) => (

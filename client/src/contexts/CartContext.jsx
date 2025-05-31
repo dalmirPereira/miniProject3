@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import React, {
+	createContext,
+	useContext,
+	useReducer,
+	useEffect,
+	useRef,
+} from "react";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
 
@@ -16,9 +23,9 @@ const cartReducer = (state, action) => {
 	}
 };
 
-const getInitialCart = () => {
+const getInitialCart = (username) => {
 	try {
-		const stored = localStorage.getItem("cart");
+		const stored = localStorage.getItem(`cart_${username}`);
 		return stored ? JSON.parse(stored) : [];
 	} catch (error) {
 		console.error("Failed to load cart from localStorage:", error);
@@ -27,11 +34,29 @@ const getInitialCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-	const [cartItems, dispatch] = useReducer(cartReducer, [], getInitialCart);
+	const { auth } = useAuth();
+	const username = auth?.username;
+	const prevUsername = useRef(username);
 
+	const [cartItems, dispatch] = useReducer(cartReducer, [], () =>
+		getInitialCart(username)
+	);
+
+	// save cart into LocalStorage
 	useEffect(() => {
-		localStorage.setItem("cart", JSON.stringify(cartItems));
-	}, [cartItems]);
+		if (username) {
+			localStorage.setItem(`cart_${username}`, JSON.stringify(cartItems));
+		}
+	}, [cartItems, username]);
+
+	// Clear cart and localStorage when user logs out
+	useEffect(() => {
+		if (prevUsername.current && !username) {
+			dispatch({ type: "clearCart" });
+			localStorage.removeItem(`cart_${prevUsername.current}`);
+		}
+		prevUsername.current = username;
+	}, [username]);
 
 	return (
 		<CartContext.Provider value={{ cartItems, dispatch }}>

@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+// import { useAuth } from "../contexts/AuthContext";
 
 const formReducer = (state, action) => {
 	switch (action.type) {
@@ -38,12 +39,8 @@ export default function SignupForm() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const trimmedForm = Object.fromEntries(
-			Object.entries(formData).map(([key, value]) => [key, value.trim()])
-		);
-
-		const missingFields = Object.entries(trimmedForm)
-			.filter(([_, value]) => !value)
+		const missingFields = Object.entries(formData)
+			.filter(([, value]) => !value || value.trim() === "")
 			.map(([key]) => key);
 
 		if (missingFields.length > 0) {
@@ -82,6 +79,19 @@ export default function SignupForm() {
 				throw new Error(errorData.message || "Signup failed!");
 			}
 
+			// const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+			// const userExists = existingUsers.some((user) => user.username === username);
+
+			// if (userExists) {
+			// 	alert("Username already taken.");
+			// 	return;
+			// }
+
+			// const newUser = { username, firstName, lastName, password };
+			// localStorage.setItem("users", JSON.stringify([...existingUsers, newUser]));
+
+			// console.log(username, firstName, lastName);
+			// login(username);
 			alert("Signup successful!");
 			navigate("/login");
 		} catch (error) {
