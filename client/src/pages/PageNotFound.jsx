@@ -2,7 +2,7 @@ import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Box, Typography, Button } from "@mui/material";
 
-function PageNotFound() {
+export default function PageNotFound() {
 	return (
 		<Box
 			display="flex"
@@ -25,5 +25,3 @@ function PageNotFound() {
 		</Box>
 	);
 }
-
-export default PageNotFound;

@@ -7,6 +7,7 @@ import {
 	Typography,
 	Paper,
 } from "@mui/material";
+import { useBooks } from "../contexts/BookContext";
 
 const initialBookState = {
 	title: "",
@@ -31,6 +32,7 @@ const formReducer = (state, action) => {
 
 export default function AddBookForm() {
 	const [formBook, dispatch] = useReducer(formReducer, initialBookState);
+	const { addBook } = useBooks;
 
 	const handleChange = (e) => {
 		dispatch({
@@ -40,12 +42,26 @@ export default function AddBookForm() {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		// Here you can send formBook to backend
-		console.log("Book added:", formBook);
-		alert("Book added successfully!");
-		dispatch({ type: "Reset" });
+
+		const newBook = {
+			title: formBook.title,
+			author: formBook.author,
+			description: formBook.description,
+			ISBN: formBook.isbn,
+			yearPublished: parseInt(formBook.yearPublished),
+			pages: parseInt(formBook.pages),
+			bookCover: formBook.coverUrl,
+		};
+
+		const result = await addBook(newBook);
+		if (result.success) {
+			alert("Book added successfully!");
+			dispatch({ type: "Reset" });
+		} else {
+			alert("Failed to add book: " + result.message);
+		}
 	};
 
 	const formField = (label, name, type = "text", multiline = false) => (

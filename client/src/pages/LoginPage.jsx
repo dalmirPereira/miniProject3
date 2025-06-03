@@ -2,7 +2,7 @@ import { Container, Typography, Paper, Box, Button } from "@mui/material";
 import LoginForm from "../components/LoginForm";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+export default function LoginPage() {
 	const navigate = useNavigate();
 	return (
 		<Box sx={{ backgroundColor: "#f8d8b6", minHeight: "100vh" }}>
@@ -41,6 +41,4 @@ const LoginPage = () => {
 			</Container>
 		</Box>
 	);
-};
-
-export default LoginPage;
+}

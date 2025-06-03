@@ -1,17 +1,17 @@
 import React from "react";
 import { Box, Typography, Button, Divider, Stack, Drawer } from "@mui/material";
-//import { useCart } from "../contexts/CartContext";
+import { useCart } from "../contexts/CartContext";
 
-export default function CartMenu({ open, onClose }) {
+export default function BorrowCartDrawer({ open, onClose }) {
 	const { cartItems, dispatch } = useCart();
 
 	const handleRemove = (isbn) => {
-		dispatch({ type: "REMOVE_FROM_CART", isbn });
+		dispatch({ type: "removeFromCart", isbn });
 	};
 
 	const handleConfirm = () => {
 		alert("Books borrowed successfully!");
-		dispatch({ type: "CLEAR_CART" });
+		dispatch({ type: "clearCart" });
 		onClose();
 	};
 

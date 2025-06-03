@@ -1,30 +1,68 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-	//authentification state/context that cares: username, roles, accesstoken
-	const [auth, setAuth] = useState({});
-	
-	// const [userRole, setUserRole] = useState(() => {
-	// 	return localStorage.getItem("userRole") || "guest";
-	// });
+	const [auth, setAuth] = useState(() => {
+		const stored = localStorage.getItem("auth");
+		return stored ? JSON.parse(stored) : {};
+	});
 
-	// useEffect(() => {
-	// 	localStorage.setItem("userRole", userRole);
-	// });
+	useEffect(() => {
+		if (auth?.accessToken) {
+			localStorage.setItem("auth", JSON.stringify(auth));
+		} else {
+			localStorage.removeItem("auth");
+		}
+	}, [auth]);
 
-	// const login = (role = "member") => setUserRole(role);
+	const login = async ({ usernameOrEmail, password }) => {
+		try {
+			const response = await fetch("http://localhost:3000/auth", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ identifier: usernameOrEmail, password }),
+			});
 
-	// const logout = () => {
-	// 	localStorage.removeItem("userRole");
-	// 	setUserRole("guest");
-	// };
+			const data = await response.json();
 
-	// const isAuthenticated = userRole !== "guest";
+			if (!response.ok) throw new Error(data.message || "Login failed");
+
+			const decoded = jwtDecode(data.accessToken);
+			const username = decoded.UserInfo.username;
+			const roles = decoded.UserInfo.roles;
+
+			const user = {
+				username,
+				roles,
+				accessToken: data.accessToken,
+			};
+
+			setAuth(user);
+			return { success: true, user };
+		} catch (error) {
+			console.error("Login error:", error);
+			return { success: false, message: error.message };
+		}
+	};
+
+	const logout = () => {
+		if (auth?.username) {
+			localStorage.removeItem(`cart_${auth.username}`);
+		}
+		setAuth(null);
+	};
+
+	//define roles
+	const userRole = auth?.roles?.includes(5150)
+		? "admin"
+		: auth?.roles?.includes(2001)
+		? "member"
+		: "guest";
 
 	return (
-		<AuthContext.Provider value={{ auth, setAuth }}>
+		<AuthContext.Provider value={{ auth, setAuth, login, logout, userRole }}>
 			{children}
 		</AuthContext.Provider>
 	);
