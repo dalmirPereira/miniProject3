@@ -17,9 +17,18 @@ export default function EditBookModal({ book, open, onClose, onSave }) {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleSubmit = () => {
-		onSave(formData);
-		onClose();
+	const handleSubmit = async () => {
+		
+		const result = await onSave(formData);
+
+		//console.log("result", result)
+		
+		if (result?.success) {
+			alert("Book updated successfully!");
+			onClose();
+		} else {
+			alert("Failed to update book: " + result.message);
+		}
 	};
 
 	return (
@@ -37,12 +46,6 @@ export default function EditBookModal({ book, open, onClose, onSave }) {
 						label="Author"
 						name="author"
 						value={formData.author}
-						onChange={handleChange}
-					/>
-					<TextField
-						label="ISBN"
-						name="ISBN"
-						value={formData.ISBN}
 						onChange={handleChange}
 					/>
 					<TextField

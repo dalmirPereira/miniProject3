@@ -16,17 +16,19 @@ const handleBookList = async (req, res) => {
 //---------------------------------REGISTER NEW BOOK-------------------------------------------------------
 const handleNewBook = async (req, res) => {
     //get user and password form client
-    const { title, author, description, categories, yearPublished } = req.body;
+    const { title, author, description, yearPublished, pages, bookCover } = req.body;
 
    // find which fields are missing or empty
     const newBook = {
         title,
         author,
         description,
-        categories,
-        yearPublished
+        yearPublished,
+        pages, 
+        bookCover
     };
-    
+    console.log("newBook", newBook);
+
     const missingFields = Object.entries(newBook)
         .filter(([key, value]) => {
             if (value === undefined || value === null) return true;
@@ -45,7 +47,7 @@ const handleNewBook = async (req, res) => {
     // check for duplicate title in the db
     const info = { title: title };
     const duplicate = await findBook(info);
-    if (duplicate) return res.sendStatus(409); //Conflict 
+    if (duplicate) return res.status(409).json({ message: 'Book Title already registered. Choose another title.' }); //Conflict 
     try {
         //create and store the new user:
         const result = await createBook(newBook);
@@ -65,15 +67,16 @@ const handleNewBook = async (req, res) => {
 const handleUpdateBook = async (req, res) => {
     //check for missing id
     const { id } = req.params;
-    if (!id) return res.status(400).json({ message: `Book with ID ${id} not found.` });; //Conflict 
+    if (!id) return res.status(400).json({ message: `ID didn't received.` }); //Conflict 
 
-    const { title, author, description, categories, yearPublished } = req.body;
+    const { title, author, description, yearPublished, pages, bookCover } = req.body;
     const updateData = {
         title,
         author,
         description,
-        categories,
-        yearPublished
+        yearPublished,
+        pages, 
+        bookCover
     };
     
     //find missing or empty fields

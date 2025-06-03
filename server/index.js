@@ -57,10 +57,10 @@ app.use('/auth', require('./routes/authRoute'));
 app.use('/refresh', require('./routes/refreshRoute'));
 app.use('/logout', require('./routes/logoutRoute'));
 
-//app.use(verifyJWT);
+app.use(verifyJWT);
 //app.use('/dashboard', require('./routes/dashboardRoute'));
-//app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/bookRoutes'));
-app.use('/admin', require('./routes/bookRoutes'));
+app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/bookRoutes'));
+//app.use('/admin', require('./routes/bookRoutes'));
 
 
 //custom error handler

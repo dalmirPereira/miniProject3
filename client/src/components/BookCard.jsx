@@ -29,16 +29,16 @@ export default function BookCard({ book }) {
 		alert(`"${book.title}" added to your borrow cart.`);
 	};
 
-	//update book
+	//DELETE book
 	const handleDelete = () => {
 		if (window.confirm(`Delete "${book.title}"?`)) {
-			deleteBook(book.id);
+			deleteBook(book._id);
 			alert("Book deleted successfully.");
 		}
 	};
 
-	const handleEdit = (updatedBook) => {
-		updateBook(updatedBook);
+	const handleEdit = async (updatedBook) => {
+		return await updateBook(updatedBook);
 	};
 
 	return (

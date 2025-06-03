@@ -28,7 +28,7 @@ const handleLogin = async (req, res) => {
     const foundUser = await findUser(info);  
     
     //if username exists
-    if (!foundUser) return res.status(401).json({ message: 'Invalid username or email.' });; 
+    if (!foundUser) return res.status(401).json({ message: 'Invalid username or email.' }); 
     //if user name found then compare the password 
     const match = await bcrypt.compare(password, foundUser.password);
 

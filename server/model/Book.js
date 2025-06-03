@@ -22,16 +22,14 @@ const bookSchema = new Schema({
         type: Number,
         required: true
     },
-    categories: {
-        type: [String],
+    pages: {
+        type: Number,
+        required: true
+    },
+    bookCover: {
+        type: String,
         required: true,
-        enum: [
-            "Fiction", "Non-fiction", "Science Fiction", "Fantasy",
-            "Romance", "Mystery", "Thriller", "Horror", "Historical",
-            "Biography", "Self-Help", "Science", "Technology", "Business",
-            "Education", "Health & Wellness", "Travel", "Art & Photography",
-            "Children", "Young Adult", "Comics/Graphic Novels"
-        ]
+        trim: true
     },
     available: {
         type: Boolean,

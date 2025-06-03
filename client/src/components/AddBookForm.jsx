@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	Box,
 	Button,
@@ -13,10 +14,9 @@ const initialBookState = {
 	title: "",
 	author: "",
 	description: "",
-	isbn: "",
 	yearPublished: "",
 	pages: "",
-	coverUrl: "",
+	coverUrl: ""
 };
 
 const formReducer = (state, action) => {
@@ -32,7 +32,8 @@ const formReducer = (state, action) => {
 
 export default function AddBookForm() {
 	const [formBook, dispatch] = useReducer(formReducer, initialBookState);
-	const { addBook } = useBooks;
+	const { addBook } = useBooks();
+	const navigate = useNavigate();
 
 	const handleChange = (e) => {
 		dispatch({
@@ -49,16 +50,16 @@ export default function AddBookForm() {
 			title: formBook.title,
 			author: formBook.author,
 			description: formBook.description,
-			ISBN: formBook.isbn,
 			yearPublished: parseInt(formBook.yearPublished),
 			pages: parseInt(formBook.pages),
 			bookCover: formBook.coverUrl,
 		};
 
 		const result = await addBook(newBook);
+
 		if (result.success) {
 			alert("Book added successfully!");
-			dispatch({ type: "Reset" });
+			navigate("/books");
 		} else {
 			alert("Failed to add book: " + result.message);
 		}
@@ -88,7 +89,6 @@ export default function AddBookForm() {
 				{formField("Title", "title")}
 				{formField("Author", "author")}
 				{formField("Description", "description", "text", true)}
-				{formField("ISBN", "isbn")}
 				{formField("Year Published", "yearPublished", "number")}
 				{formField("Pages", "pages", "number")}
 				{formField("Cover Image URL", "coverUrl")}
