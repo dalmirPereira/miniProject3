@@ -5,6 +5,13 @@ const findBook = async (info) => {
     return await Book.findOne(info).exec();  
 };
 
+const findBookAvailable = async (bookIds) => {
+    return await Book.find({
+        _id: { $in: bookIds },
+        available: true
+    }).exec();
+};
+
 const updateBookById = async (id, updateData) => {
     return await Book.findByIdAndUpdate(
         id,
@@ -33,5 +40,6 @@ module.exports = {
     updateBookById,
     createBook,
     getBooks,
-    deleteBookById
+    deleteBookById,
+    findBookAvailable
 }

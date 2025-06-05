@@ -58,10 +58,10 @@ app.use('/refresh', require('./routes/refreshRoute'));
 app.use('/logout', require('./routes/logoutRoute'));
 
 app.use(verifyJWT);
-//app.use('/dashboard', require('./routes/dashboardRoute'));
-app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/bookRoutes'));
-//app.use('/admin', require('./routes/bookRoutes'));
-
+//app.use('/user', require('./routes/userRoutes'));
+app.use('/user', verifyRoles(ROLES_LIST.Admin), require('./routes/userRoutes'));
+//app.use('/admin', require('./routes/adminRoutes'));
+app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/adminRoutes'));
 
 //custom error handler
 app.use(errorHandler);

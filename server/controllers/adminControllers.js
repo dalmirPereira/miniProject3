@@ -1,5 +1,6 @@
 //Services to access DB
 const { findBook, updateBookById, getBooks, createBook, deleteBookById } = require('../services/bookService')
+const { getBorrowedBooks, returnBook } = require('../services/bookLogService')
 
 //---------------------------------BOOK LIST-------------------------------------------------------
 const handleBookList = async (req, res) => {
@@ -135,10 +136,63 @@ const handleDeleteBook = async (req, res) => {
 };
 //--------------------------------------------------------------------------------------------------
 
+//---------------------------------BORROWED BOOKS LIST-------------------------------------------------------
+const handleBorrowedBooks = async (req, res) => {
+    try {
+        const borrowedBooks = await getBorrowedBooks();
+        res.json(borrowedBooks);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+//--------------------------------------------------------------------------------------------------
+
+//---------------------------------RETURN BOOK-------------------------------------------------------
+const handleReturnBook = async (req, res) => {
+    const { userId } = req.params;
+    if (!userId) return res.status(400).json({ message: `User ID didn't receive.` }); //Conflict 
+
+    const { bookIds } = req.body;
+
+   // find which fields are missing or empty
+    const newBookLog = {
+        bookIds
+    };
+
+    const missingFields = Object.entries(newBookLog)
+        .filter(([key, value]) => {
+            if (value === undefined || value === null) return true;
+            if (typeof value === 'string' && value.trim() === '') return true;
+            if (Array.isArray(value) && value.length === 0) return true;
+            return false;
+        })
+        .map(([key]) => key);
+
+    if (missingFields.length > 0) {
+        return res.status(400).json({
+            message: `The following fields are required and missing: ${missingFields.join(', ')}`
+        });
+    }
+
+    try {
+        //return book:
+        const result = await returnBook(userId, bookIds);
+        
+        console.log(result);
+
+        res.status(201).json({ 'success': `Books returned successfully!` });
+    
+    } catch (err) {
+        res.status(500).json({ 'message': err.message });
+    }
+};
+//--------------------------------------------------------------------------------------------------
 
 module.exports = { 
     handleBookList,
     handleNewBook,
     handleUpdateBook,
-    handleDeleteBook
+    handleDeleteBook,
+    handleBorrowedBooks,
+    handleReturnBook
  };
