@@ -11,11 +11,11 @@ const CartContext = createContext();
 
 const cartReducer = (state, action) => {
 	switch (action.type) {
-		case "addToCartT":
-			if (state.find((book) => book.ISBN === action.book.ISBN)) return state;
+		case "addToCart":
+			if (state.find((book) => book._id === action.book._id)) return state;
 			return [...state, action.book];
 		case "removeFromCart":
-			return state.filter((book) => book.ISBN !== action.isbn);
+			return state.filter((book) => book._id !== action._id);
 		case "clearCart":
 			return [];
 		default:
@@ -52,8 +52,8 @@ export const CartProvider = ({ children }) => {
 	// Clear cart and localStorage when user logs out
 	useEffect(() => {
 		if (prevUsername.current && !username) {
-			dispatch({ type: "clearCart" });
 			localStorage.removeItem(`cart_${prevUsername.current}`);
+			dispatch({ type: "clearCart" });
 		}
 		prevUsername.current = username;
 	}, [username]);

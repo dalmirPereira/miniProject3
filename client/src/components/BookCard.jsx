@@ -15,7 +15,6 @@ import EditBookModal from "./EditBookModal";
 export default function BookCard({ book }) {
 	const { userRole } = useAuth();
 	const { dispatch } = useCart();
-	// console.log("useRole:", userRole);
 	const { deleteBook, updateBook } = useBooks();
 	const [editing, setEditing] = useState(false);
 
@@ -25,7 +24,7 @@ export default function BookCard({ book }) {
 	};
 
 	const handleBorrow = () => {
-		dispatch({ type: "addToCartT", book });
+		dispatch({ type: "addToCart", book });
 		alert(`"${book.title}" added to your borrow cart.`);
 	};
 
@@ -56,9 +55,6 @@ export default function BookCard({ book }) {
 					</Typography>
 					<Typography variant="subtitle1" color="text.secondary">
 						<b>Author:</b> {book.author}
-					</Typography>
-					<Typography variant="caption" display="block">
-						<b>ISBN:</b> {book.ISBN}
 					</Typography>
 					<Typography variant="caption" display="block">
 						<b>Published:</b> {book.yearPublished}

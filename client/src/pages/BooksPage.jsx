@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Grid, CircularProgress  } from "@mui/material";
+import React from "react";
+import {
+	Container,
+	Typography,
+	Box,
+	Grid,
+	CircularProgress,
+} from "@mui/material";
 import BookCard from "../components/BookCard";
 import { useBooks } from "../contexts/BookContext";
 
 export default function BooksPage() {
-	const { books } = useBooks();
-	const [loading, setLoading] = useState(true);
+	const { books, loading } = useBooks();
 
-	useEffect(() => {
-		// When books array is updated (not empty or fetched), stop loading
-		if (books.length > 0) {
-			setLoading(false);
-			//console.log("setLoading")
-		}
-	}, [books]);
+	// useEffect(() => {
+	// 	// When books array is updated (not empty or fetched), stop loading
+	// 	if (books.length > 0) {
+	// 		setLoading(false);
+	// 		//console.log("setLoading")
+	// 	}
+	// }, [books]);
 
 	return (
 		<Box sx={{ backgroundColor: "#f8d8b6", minHeight: "100vh" }}>

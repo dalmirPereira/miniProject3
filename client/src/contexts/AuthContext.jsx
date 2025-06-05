@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
 	});
 
 	useEffect(() => {
+		// console.log(auth);
+		// console.log(userRole);
 		if (auth?.accessToken) {
 			//console.log("auth", auth);
 			localStorage.setItem("auth", JSON.stringify(auth));
@@ -36,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 			const data = await response.json();
 
 			if (!response.ok) throw new Error(data.message || "Login failed");
-			
+
 			const decoded = jwtDecode(data.accessToken);
 			const username = decoded.UserInfo.username;
 			const roles = decoded.UserInfo.roles;
@@ -46,10 +48,9 @@ export const AuthProvider = ({ children }) => {
 				roles,
 				accessToken: data.accessToken,
 			};
-			
+
 			setAuth(user);
 			return { success: true, user };
-
 		} catch (error) {
 			console.error("Login error:", error);
 			return { success: false, message: error.message };
