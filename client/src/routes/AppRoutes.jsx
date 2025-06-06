@@ -11,6 +11,7 @@ import AddBookPage from "../pages/AddBookPage";
 import AdminRoute from "../routes/AdminRoute";
 import MyBookshelf from "../pages/MyBookshelf";
 import BorrowedBooks from "../pages/BorrowedBooks";
+import MemberRoute from "./MemberRoute";
 
 export default function AppRouter() {
 	//console.log(isAuthenticated);
@@ -23,10 +24,12 @@ export default function AppRouter() {
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/books" element={<BooksPage />} />
 				<Route path="/contactus" element={<ContactUsPage />} />
-				<Route path="/bookshelf" element={<MyBookshelf />} />
 				<Route element={<AdminRoute />}>
 					<Route path="/admin/addbooks" element={<AddBookPage />} />
 					<Route path="/admin/borrowedbooks" element={<BorrowedBooks />} />
+				</Route>
+				<Route element={<MemberRoute />}>
+					<Route path="/member/bookshelf" element={<MyBookshelf />} />
 				</Route>
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>

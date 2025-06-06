@@ -42,14 +42,27 @@ export default function BookCard({ book }) {
 
 	return (
 		<>
-			<Card sx={{ width: 250, mb: 3 }}>
+			<Card
+				sx={{
+					width: 250,
+					mb: 3,
+					position: "relative",
+					pb: 6,
+					border: "solid",
+					borderColor: "#db7c1c",
+				}}
+			>
 				<CardMedia
 					component="img"
 					height="350"
 					image={book.bookCover}
 					alt={`${book.title} cover`}
+					sx={{
+						objectFit: "cover",
+						padding: 1,
+					}}
 				/>
-				<CardContent>
+				<CardContent sx={{ height: 200, backgroundColor: "#f5ebdd" }}>
 					<Typography variant="h6" gutterBottom>
 						{book.title}
 					</Typography>
@@ -89,10 +102,17 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"}>
 							<Button
 								variant="outlined"
-								sx={{ mt: 1, backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleBorrow}
+								disabled={!book.available}
+								color={book.available ? "primary" : "warning"}
 							>
-								Borrow
+								{book.available ? "Borrow" : "Unavailable"}
 							</Button>
 						</Box>
 					)}
@@ -103,8 +123,10 @@ export default function BookCard({ book }) {
 								variant="outlined"
 								sx={{ backgroundColor: "white" }}
 								onClick={handleClick}
+								disabled={!book.available}
+								color={book.available ? "primary" : "warning"}
 							>
-								Borrow
+								{book.available ? "Borrow" : "Unavailable"}
 							</Button>
 						</Box>
 					)}

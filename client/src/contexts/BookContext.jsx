@@ -13,7 +13,8 @@ export const BookProvider = ({ children }) => {
 	//GET the updated list of books from the DB
 	const fetchBooks = async () => {
 		try {
-			const res = await fetch(`http://localhost:3000/admin`, {
+			const res = await fetch(`http://localhost:3000/books`, {
+				//change route from http://localhost:3000/admin so everyone can access
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

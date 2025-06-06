@@ -66,6 +66,9 @@ app.use(
 );
 //app.use('/admin', require('./routes/bookRoutes'));
 
+//public route for browsing books
+app.use("/books", require("./routes/publicBookRoutes"));
+
 //custom error handler
 app.use(errorHandler);
 
