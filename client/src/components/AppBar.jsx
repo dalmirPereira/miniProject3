@@ -27,8 +27,15 @@ export default function ResponsiveAppBar() {
 		{ label: "Contact Us", path: "/contactus" },
 	];
 
+	//Extra page for admin
 	if (userRole === "admin") {
 		pages.push({ label: "Add A Book", path: "/admin/addbooks" });
+		pages.push({ label: "Borrowed Books", path: "/admin/borrowedbooks" });
+	}
+
+	//Extra page for member
+	if (userRole === "member") {
+		pages.push({ label: "My Bookshelf", path: "/member/bookshelf" });
 	}
 
 	const handleOpenNavMenu = (event) => {
