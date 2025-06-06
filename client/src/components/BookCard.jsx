@@ -15,7 +15,6 @@ import EditBookModal from "./EditBookModal";
 export default function BookCard({ book }) {
 	const { userRole } = useAuth();
 	const { dispatch } = useCart();
-	// console.log("useRole:", userRole);
 	const { deleteBook, updateBook } = useBooks();
 	const [editing, setEditing] = useState(false);
 
@@ -25,7 +24,7 @@ export default function BookCard({ book }) {
 	};
 
 	const handleBorrow = () => {
-		dispatch({ type: "addToCartT", book });
+		dispatch({ type: "addToCart", book });
 		alert(`"${book.title}" added to your borrow cart.`);
 	};
 
@@ -43,22 +42,41 @@ export default function BookCard({ book }) {
 
 	return (
 		<>
-			<Card sx={{ width: 250, mb: 3 }}>
+			<Card
+				sx={{
+					width: 250,
+					mb: 3,
+					position: "relative",
+					pb: 6,
+					border: "solid",
+					borderColor: "#db7c1c",
+				}}
+			>
 				<CardMedia
 					component="img"
 					height="350"
 					image={book.bookCover}
 					alt={`${book.title} cover`}
+					sx={{
+						objectFit: "cover",
+						padding: 1,
+					}}
 				/>
-				<CardContent>
+				<CardContent
+					sx={{
+						height: 200,
+						display: "flex",
+						flexDirection: "column",
+						backgroundColor: "#f5ebdd",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
+				>
 					<Typography variant="h6" gutterBottom>
 						{book.title}
 					</Typography>
 					<Typography variant="subtitle1" color="text.secondary">
 						<b>Author:</b> {book.author}
-					</Typography>
-					<Typography variant="caption" display="block">
-						<b>ISBN:</b> {book.ISBN}
 					</Typography>
 					<Typography variant="caption" display="block">
 						<b>Published:</b> {book.yearPublished}
@@ -73,7 +91,12 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"} sx={{ mt: 1 }}>
 							<Button
 								variant="outlined"
-								sx={{ backgroundColor: "white", mr: 1 }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									left: 8,
+									backgroundColor: "white",
+								}}
 								onClick={() => setEditing(true)}
 							>
 								Edit
@@ -81,7 +104,12 @@ export default function BookCard({ book }) {
 							<Button
 								variant="outlined"
 								color="error"
-								sx={{ backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleDelete}
 							>
 								Delete
@@ -93,10 +121,17 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"}>
 							<Button
 								variant="outlined"
-								sx={{ mt: 1, backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleBorrow}
+								disabled={!book.available}
+								color={book.available ? "primary" : "warning"}
 							>
-								Borrow
+								{book.available ? "Borrow" : "Unavailable"}
 							</Button>
 						</Box>
 					)}
@@ -105,10 +140,17 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"} sx={{ mt: 1 }}>
 							<Button
 								variant="outlined"
-								sx={{ backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleClick}
+								disabled={!book.available}
+								color={book.available ? "primary" : "warning"}
 							>
-								Borrow
+								{book.available ? "Borrow" : "Unavailable"}
 							</Button>
 						</Box>
 					)}
