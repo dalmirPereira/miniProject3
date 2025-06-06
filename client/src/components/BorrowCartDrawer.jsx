@@ -2,10 +2,12 @@ import React from "react";
 import { Box, Typography, Button, Divider, Stack, Drawer } from "@mui/material";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
+import { useBooks } from "../contexts/BookContext";
 
 export default function BorrowCartDrawer({ open, onClose }) {
 	const { cartItems, dispatch } = useCart();
 	const { auth } = useAuth();
+	const { fetchBooks } = useBooks();
 
 	const handleRemove = (_id) => {
 		dispatch({ type: "removeFromCart", _id });
@@ -14,7 +16,7 @@ export default function BorrowCartDrawer({ open, onClose }) {
 	//Send Borrowed books to API
 	const handleConfirm = async () => {
 		try {
-			const res = await fetch("http://localhost:3000/borrow", {
+			const res = await fetch("http://localhost:3000/booklog", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -32,6 +34,7 @@ export default function BorrowCartDrawer({ open, onClose }) {
 
 			alert("Books borrowed successfully!");
 			dispatch({ type: "clearCart" });
+			fetchBooks();
 			onClose();
 		} catch (error) {
 			console.error("Borrow failed:", error);

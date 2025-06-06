@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Card,
 	CardContent,
@@ -11,45 +11,69 @@ import {
 	Button,
 	Box,
 } from "@mui/material";
+import { useAuth } from "../contexts/AuthContext";
 
-// Sample data (replace with API data)
-const borrowedData = [
-	{
-		memberId: 1,
-		name: "Alice Johnson",
-		books: [
-			{
-				id: 101,
-				title: "1984",
-				borrowedDate: "2025-05-20",
-				returnDate: "2025-06-10",
-			},
-			{
-				id: 102,
-				title: "Brave New World",
-				borrowedDate: "2025-05-22",
-				returnDate: "2025-06-12",
-			},
-		],
-	},
-	{
-		memberId: 2,
-		name: "Bob Smith",
-		books: [
-			{
-				id: 103,
-				title: "The Catcher in the Rye",
-				borrowedDate: "2025-05-25",
-				returnDate: "2025-06-15",
-			},
-		],
-	},
-];
+export default function BorrowedBooks() {
+	const { auth } = useAuth();
+	const [borrowedData, setBorrowedData] = useState([]);
+	const [error, setError] = useState(null);
 
-const BorrowedBooksAdmin = () => {
-	const handleReturn = (memberId, bookId) => {
-		console.log(`Returning book ID ${bookId} for member ID ${memberId}`);
-		// Add your backend logic here
+	useEffect(() => {
+		const fetchAllBorrowLogs = async () => {
+			try {
+				const res = await fetch("http://localhost:3001/booklog/all", {
+					headers: {
+						Authorization: `Bearer ${auth.accessToken}`,
+					},
+				});
+
+				const data = await res.json();
+				if (!res.ok) throw new Error(data.message || "Failed to fetch Book Log");
+				setBorrowedData(data);
+			} catch (err) {
+				console.error("Fetch error:", err);
+				setError(err.message);
+			}
+		};
+
+		if (auth?.accessToken) {
+			fetchAllBorrowLogs();
+		}
+	}, [auth]);
+
+	const handleReturn = async (memberId, bookId) => {
+		try {
+			const res = await fetch("http://localhost:3001/booklog/return", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${auth.accessToken}`,
+				},
+				body: JSON.stringify({ userId: memberId, bookId }),
+			});
+
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.message || "Failed to return book.");
+
+			alert("Book returned successfully!");
+
+			// Refresh borrow logs
+			setBorrowedData((prev) =>
+				prev
+					.map((member) =>
+						member.memberId === memberId
+							? {
+									...member,
+									books: member.books.filter((book) => book.id !== bookId),
+							  }
+							: member
+					)
+					.filter((member) => member.books.length > 0)
+			);
+		} catch (err) {
+			console.error("Return failed:", err);
+			setError(err.message);
+		}
 	};
 
 	return (
@@ -59,6 +83,8 @@ const BorrowedBooksAdmin = () => {
 			gap={3}
 			sx={{ backgroundColor: "#f8d8b6", padding: 3, minHeight: "90vh" }}
 		>
+			{error && <Alert severity="error">{error}</Alert>}
+
 			{borrowedData.map((member) => (
 				<Card
 					key={member.memberId}
@@ -110,6 +136,4 @@ const BorrowedBooksAdmin = () => {
 			))}
 		</Box>
 	);
-};
-
-export default BorrowedBooksAdmin;
+}

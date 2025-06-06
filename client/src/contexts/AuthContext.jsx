@@ -61,6 +61,7 @@ export const AuthProvider = ({ children }) => {
 		if (auth?.username) {
 			localStorage.removeItem(`cart_${auth.username}`);
 		}
+		localStorage.removeItem("authToken");
 		setAuth(null);
 	};
 

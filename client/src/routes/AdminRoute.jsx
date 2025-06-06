@@ -3,9 +3,16 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function AdminRoute() {
 	const { auth, userRole } = useAuth();
-	return auth?.accessToken && userRole === "admin" ? (
-		<Outlet />
-	) : (
-		<Navigate to="/unauthorized" replace />
-	);
+	if (!auth?.accessToken) {
+		// User is not logged in
+		return <Navigate to="/login" replace />;
+	}
+
+	if (userRole !== "admin") {
+		// User is logged in, but not admin
+		return <Navigate to="/unauthorized" replace />;
+	}
+
+	// User is logged in and is an admin
+	return <Outlet />;
 }

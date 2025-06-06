@@ -14,7 +14,6 @@ import BorrowedBooks from "../pages/BorrowedBooks";
 import MemberRoute from "./MemberRoute";
 
 export default function AppRouter() {
-	//console.log(isAuthenticated);
 	return (
 		<BrowserRouter>
 			<ResponsiveAppBar></ResponsiveAppBar>

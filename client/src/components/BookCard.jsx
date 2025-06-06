@@ -62,7 +62,16 @@ export default function BookCard({ book }) {
 						padding: 1,
 					}}
 				/>
-				<CardContent sx={{ height: 200, backgroundColor: "#f5ebdd" }}>
+				<CardContent
+					sx={{
+						height: 200,
+						display: "flex",
+						flexDirection: "column",
+						backgroundColor: "#f5ebdd",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+					}}
+				>
 					<Typography variant="h6" gutterBottom>
 						{book.title}
 					</Typography>
@@ -82,7 +91,12 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"} sx={{ mt: 1 }}>
 							<Button
 								variant="outlined"
-								sx={{ backgroundColor: "white", mr: 1 }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									left: 8,
+									backgroundColor: "white",
+								}}
 								onClick={() => setEditing(true)}
 							>
 								Edit
@@ -90,7 +104,12 @@ export default function BookCard({ book }) {
 							<Button
 								variant="outlined"
 								color="error"
-								sx={{ backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleDelete}
 							>
 								Delete
@@ -121,7 +140,12 @@ export default function BookCard({ book }) {
 						<Box textAlign={"end"} sx={{ mt: 1 }}>
 							<Button
 								variant="outlined"
-								sx={{ backgroundColor: "white" }}
+								sx={{
+									position: "absolute",
+									bottom: 8,
+									right: 8,
+									backgroundColor: "white",
+								}}
 								onClick={handleClick}
 								disabled={!book.available}
 								color={book.available ? "primary" : "warning"}
