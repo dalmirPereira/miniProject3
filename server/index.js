@@ -59,7 +59,7 @@ app.use('/logout', require('./routes/logoutRoute'));
 
 app.use(verifyJWT);
 //app.use('/user', require('./routes/userRoutes'));
-app.use('/user', verifyRoles(ROLES_LIST.Admin), require('./routes/userRoutes'));
+app.use('/user', verifyRoles(ROLES_LIST.User), require('./routes/userRoutes'));
 //app.use('/admin', require('./routes/adminRoutes'));
 app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/adminRoutes'));
 
