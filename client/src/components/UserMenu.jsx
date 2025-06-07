@@ -14,6 +14,7 @@ export default function UserMenu() {
 	const { cartItems } = useCart();
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
+	//user menu change login or logout
 	const handleClick = () => {
 		if (isAuthenticated) {
 			logout();

@@ -43,7 +43,7 @@ export default function ContactUsPage() {
 					}}
 				>
 					<Paper elevation={3} sx={{ p: 4, backgroundColor: "#f5ebdd" }}>
-						<Typography variant="h6" gutterBottom>
+						<Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
 							Send Us a Message
 						</Typography>
 						<form onSubmit={handleSubmit}>

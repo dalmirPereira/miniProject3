@@ -11,33 +11,60 @@ import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import { useBooks } from "../contexts/BookContext";
 import EditBookModal from "./EditBookModal";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function BookCard({ book }) {
 	const { userRole } = useAuth();
 	const { dispatch, cartItems } = useCart();
 	const { deleteBook, updateBook } = useBooks();
 	const [editing, setEditing] = useState(false);
+	const [snackbar, setSnackbar] = useState({
+		open: false,
+		message: "",
+		severity: "success",
+	});
 
+	//when guest without login try to borrow book
 	const handleClick = (e) => {
 		e.preventDefault();
-		alert("Login to borrow book");
+		setSnackbar({
+			open: true,
+			message: `Login to borrow book`,
+			severity: "error",
+		});
 	};
 
+	//Put book into cart
 	const handleBorrow = () => {
 		dispatch({ type: "addToCart", book });
-		alert(`"${book.title}" added to your borrow cart.`);
+		setSnackbar({
+			open: true,
+			message: `${book.title} added to your borrow cart.`,
+			severity: "success",
+		});
 	};
 
-	//DELETE book
+	//Delete book
 	const handleDelete = () => {
 		if (window.confirm(`Delete "${book.title}"?`)) {
 			deleteBook(book._id);
-			alert("Book deleted successfully.");
+			setSnackbar({
+				open: true,
+				message: `Book deleted successfully.`,
+				severity: "success",
+			});
 		}
 	};
 
+	//Edit book - handle logic in BookContext and EditModal will pop up
 	const handleEdit = async (updatedBook) => {
 		return await updateBook(updatedBook);
+	};
+
+	const handleSnackbarClose = (event, reason) => {
+		if (reason === "clickaway") return;
+		setSnackbar({ ...snackbar, open: false });
 	};
 
 	return (
@@ -128,16 +155,16 @@ export default function BookCard({ book }) {
 									backgroundColor: "white",
 								}}
 								onClick={handleBorrow}
-								disabled={!book.available || cartItems.find(item => item._id === book._id)}
+								disabled={
+									!book.available || cartItems.find((item) => item._id === book._id)
+								}
 								color={book.available ? "primary" : "warning"}
 							>
-								{book.available ? (
-									cartItems.find(item => item._id === book._id)
+								{book.available
+									? cartItems.find((item) => item._id === book._id)
 										? "On Cart"
 										: "Borrow"
-								) : (
-									"Unavailable"
-								)}
+									: "Unavailable"}
 							</Button>
 						</Box>
 					)}
@@ -153,16 +180,16 @@ export default function BookCard({ book }) {
 									backgroundColor: "white",
 								}}
 								onClick={handleClick}
-								disabled={!book.available || cartItems.find(item => item._id === book._id)}
+								disabled={
+									!book.available || cartItems.find((item) => item._id === book._id)
+								}
 								color={book.available ? "primary" : "warning"}
 							>
-								{book.available ? (
-									cartItems.find(item => item._id === book._id)
+								{book.available
+									? cartItems.find((item) => item._id === book._id)
 										? "On Cart"
 										: "Borrow"
-								) : (
-									"Unavailable"
-								)}
+									: "Unavailable"}
 							</Button>
 						</Box>
 					)}
@@ -176,6 +203,20 @@ export default function BookCard({ book }) {
 					onSave={handleEdit}
 				/>
 			)}
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={4000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity={snackbar.severity}
+					sx={{ width: "100%" }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
 		</>
 	);
 }

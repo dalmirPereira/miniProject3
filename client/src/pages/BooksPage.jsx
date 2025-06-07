@@ -45,7 +45,12 @@ export default function BooksPage() {
 	return (
 		<Box sx={{ backgroundColor: "#f8d8b6", minHeight: "100vh" }}>
 			<Container sx={{ py: 5 }}>
-				<Typography variant="h4" gutterBottom align="center">
+				<Typography
+					variant="h4"
+					gutterBottom
+					align="center"
+					sx={{ fontWeight: "bold" }}
+				>
 					Book List
 				</Typography>
 

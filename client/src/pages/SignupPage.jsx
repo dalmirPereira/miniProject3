@@ -19,7 +19,12 @@ export default function SignupPage() {
 					elevation={3}
 					sx={{ padding: 4, width: "100%", backgroundColor: "#f5ebdd" }}
 				>
-					<Typography variant="h5" align="center" gutterBottom>
+					<Typography
+						variant="h5"
+						align="center"
+						gutterBottom
+						sx={{ fontWeight: "bold" }}
+					>
 						Sign Up
 					</Typography>
 					<SignupForm />

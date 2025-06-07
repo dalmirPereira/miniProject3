@@ -7,7 +7,7 @@ export default function HomePage() {
 		<Box sx={{ backgroundColor: "#f8d8b6", minHeight: "100vh" }}>
 			{/* Main Content */}
 			<Container sx={{ textAlign: "center" }}>
-				<Typography variant="h4" gutterBottom>
+				<Typography variant="h4" gutterBottom sx={{ fontWeight: "bold", pt: 3 }}>
 					Location
 				</Typography>
 				<Card
@@ -22,7 +22,7 @@ export default function HomePage() {
 					<CarouselImage></CarouselImage>
 				</Card>
 
-				<Typography variant="h4" sx={{ mt: 4 }} gutterBottom>
+				<Typography variant="h4" sx={{ mt: 4, fontWeight: "bold" }} gutterBottom>
 					About Us
 				</Typography>
 				<Card

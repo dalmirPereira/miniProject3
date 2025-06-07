@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-// import { jwtDecode } from "jwt-decode";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function LoginForm() {
 	const { login } = useAuth();
@@ -17,85 +18,83 @@ export default function LoginForm() {
 		setCredentials({ ...credentials, [e.target.name]: e.target.value });
 	};
 
+	const [snackbar, setSnackbar] = useState({
+		open: false,
+		message: "",
+		severity: "success",
+	});
+
+	//Send login username and password to login - AuthContext
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const result = await login(credentials);
 
 		if (result.success) {
-			alert(`Welcome ${result.user.username}`);
-			navigate("/");
+			setSnackbar({
+				open: true,
+				message: `Welcome ${result.user.username}`,
+				severity: "success",
+			});
+			setTimeout(() => {
+				navigate("/");
+			}, 2000);
 		} else {
-			alert("Login failed: " + result.message);
+			setSnackbar({
+				open: true,
+				message: "Login failed: " + result.message,
+				severity: "error",
+			});
 		}
 	};
 
-	// const handleLogin = async (e) => {
-	// 	e.preventDefault();
-
-	// 	const { identifier, password } = credentials;
-
-	// 	try {
-	// 		const response = await fetch("http://localhost:3000/auth", {
-	// 			method: "POST",
-	// 			headers: {
-	// 				"content-Type": "application/json",
-	// 			},
-	// 			body: JSON.stringify({
-	// 				identifier,
-	// 				password,
-	// 			}),
-	// 		});
-
-	// 		const data = await response.json();
-
-	// 		if (response.ok) {
-	// 			const decoded = jwtDecode(data.accessToken);
-	// 			const username = decoded.UserInfo.username;
-	// 			const roles = decoded.UserInfo.roles;
-
-	// 			setAuth({
-	// 				username,
-	// 				roles,
-	// 				accessToken: data.accessToken,
-	// 			});
-	// 			alert(`Welcome ${username}`);
-	// 			navigate("/");
-	// 		} else {
-	// 			alert(data.message || "Login failed");
-	// 		}
-	// 	} catch (error) {
-	// 		console.error("Signup error", error);
-	// 		alert("Signup failed: " + error.message);
-	// 	}
-	// };
+	const handleSnackbarClose = (event, reason) => {
+		if (reason === "clickaway") return;
+		setSnackbar({ ...snackbar, open: false });
+	};
 
 	return (
-		<Box component="form" onSubmit={handleSubmit} noValidate>
-			<TextField
-				label="Email or Username"
-				name="identifier"
-				value={credentials.identifier}
-				onChange={handleChange}
-				fullWidth
-				required
-				margin="normal"
-				sx={{ backgroundColor: "white" }}
-			/>
-			<TextField
-				label="Password"
-				name="password"
-				type="password"
-				value={credentials.password}
-				onChange={handleChange}
-				fullWidth
-				required
-				margin="normal"
-				sx={{ backgroundColor: "white" }}
-			/>
-			<Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-				Log In
-			</Button>
-		</Box>
+		<>
+			<Box component="form" onSubmit={handleSubmit} noValidate>
+				<TextField
+					label="Email or Username"
+					name="identifier"
+					value={credentials.identifier}
+					onChange={handleChange}
+					fullWidth
+					required
+					margin="normal"
+					sx={{ backgroundColor: "white" }}
+				/>
+				<TextField
+					label="Password"
+					name="password"
+					type="password"
+					value={credentials.password}
+					onChange={handleChange}
+					fullWidth
+					required
+					margin="normal"
+					sx={{ backgroundColor: "white" }}
+				/>
+				<Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+					Log In
+				</Button>
+			</Box>
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={4000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity={snackbar.severity}
+					sx={{ width: "100%" }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
+		</>
 	);
 }

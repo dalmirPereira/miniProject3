@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	Box,
@@ -9,6 +9,8 @@ import {
 	Paper,
 } from "@mui/material";
 import { useBooks } from "../contexts/BookContext";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const initialBookState = {
 	title: "",
@@ -16,7 +18,7 @@ const initialBookState = {
 	description: "",
 	yearPublished: "",
 	pages: "",
-	coverUrl: ""
+	coverUrl: "",
 };
 
 const formReducer = (state, action) => {
@@ -34,6 +36,11 @@ export default function AddBookForm() {
 	const [formBook, dispatch] = useReducer(formReducer, initialBookState);
 	const { addBook } = useBooks();
 	const navigate = useNavigate();
+	const [snackbar, setSnackbar] = useState({
+		open: false,
+		message: "",
+		severity: "success",
+	});
 
 	const handleChange = (e) => {
 		dispatch({
@@ -43,6 +50,7 @@ export default function AddBookForm() {
 		});
 	};
 
+	//submir formBook data into BookContext
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -58,11 +66,26 @@ export default function AddBookForm() {
 		const result = await addBook(newBook);
 
 		if (result.success) {
-			alert("Book added successfully!");
-			navigate("/books");
+			setSnackbar({
+				open: true,
+				message: `Book added successfully!`,
+				severity: "success",
+			});
+			setTimeout(() => {
+				navigate("/books");
+			}, 2000);
 		} else {
-			alert("Failed to add book: " + result.message);
+			setSnackbar({
+				open: true,
+				message: `Failed to add book: ${result.message}`,
+				severity: "error",
+			});
 		}
+	};
+
+	const handleSnackbarClose = (event, reason) => {
+		if (reason === "clickaway") return;
+		setSnackbar({ ...snackbar, open: false });
 	};
 
 	const formField = (label, name, type = "text", multiline = false) => (
@@ -84,19 +107,35 @@ export default function AddBookForm() {
 	);
 
 	return (
-		<Container maxWidth="sm">
-			<form onSubmit={handleSubmit} noValidate>
-				{formField("Title", "title")}
-				{formField("Author", "author")}
-				{formField("Description", "description", "text", true)}
-				{formField("Year Published", "yearPublished", "number")}
-				{formField("Pages", "pages", "number")}
-				{formField("Cover Image URL", "coverUrl")}
+		<>
+			<Container maxWidth="sm">
+				<form onSubmit={handleSubmit} noValidate>
+					{formField("Title", "title")}
+					{formField("Author", "author")}
+					{formField("Description", "description", "text", true)}
+					{formField("Year Published", "yearPublished", "number")}
+					{formField("Pages", "pages", "number")}
+					{formField("Cover Image URL", "coverUrl")}
 
-				<Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-					Add Book
-				</Button>
-			</form>
-		</Container>
+					<Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+						Add Book
+					</Button>
+				</form>
+			</Container>
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={4000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity={snackbar.severity}
+					sx={{ width: "100%" }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
+		</>
 	);
 }

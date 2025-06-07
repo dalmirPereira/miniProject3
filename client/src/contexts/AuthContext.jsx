@@ -16,17 +16,14 @@ export const AuthProvider = ({ children }) => {
 	});
 
 	useEffect(() => {
-		// console.log(auth);
-		// console.log(userRole);
 		if (auth?.accessToken) {
-			//console.log("auth", auth);
 			localStorage.setItem("auth", JSON.stringify(auth));
 		} else {
 			localStorage.removeItem("auth");
-			//console.log("auth2", auth);
 		}
 	}, [auth]);
 
+	//login
 	const login = async ({ identifier, password }) => {
 		try {
 			const response = await fetch("http://localhost:3000/auth", {
@@ -59,6 +56,7 @@ export const AuthProvider = ({ children }) => {
 		}
 	};
 
+	//logout
 	const logout = () => {
 		if (auth?.username) {
 			localStorage.removeItem(`cart_${auth.username}`);

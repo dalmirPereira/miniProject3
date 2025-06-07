@@ -14,7 +14,6 @@ export const BookProvider = ({ children }) => {
 	const fetchBooks = async () => {
 		try {
 			const res = await fetch(`http://localhost:3000/books`, {
-				//change route from http://localhost:3000/admin so everyone can access
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -119,7 +118,15 @@ export const BookProvider = ({ children }) => {
 
 	return (
 		<BookContext.Provider
-			value={{ books, loading, addBook, setBooks, updateBook, deleteBook, fetchBooks }}
+			value={{
+				books,
+				loading,
+				addBook,
+				setBooks,
+				updateBook,
+				deleteBook,
+				fetchBooks,
+			}}
 		>
 			{children}
 		</BookContext.Provider>
