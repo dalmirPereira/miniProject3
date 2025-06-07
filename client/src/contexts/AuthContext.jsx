@@ -41,10 +41,12 @@ export const AuthProvider = ({ children }) => {
 
 			const decoded = jwtDecode(data.accessToken);
 			const username = decoded.UserInfo.username;
+			const userId = decoded.UserInfo.userId;
 			const roles = decoded.UserInfo.roles;
 
 			const user = {
 				username,
+				userId,
 				roles,
 				accessToken: data.accessToken,
 			};

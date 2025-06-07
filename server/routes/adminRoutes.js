@@ -7,9 +7,6 @@ const manageAdminController = require("../controllers/adminControllers");
 //a POST request to register new book.
 router.post('/', manageAdminController.handleNewBook);
 
-//a GET request to book list.
-router.get('/', manageAdminController.handleBookList);
-
 //a put request to update book.
 router.put('/:id', manageAdminController.handleUpdateBook);
 

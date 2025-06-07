@@ -22,8 +22,9 @@ export default function MyBookshelf() {
 		const fetchBorrowLogs = async () => {
 			try {
 				const res = await fetch(
-					`http://localhost:3001/booklog/user/${auth.username}`,
+					`http://localhost:3000/user/${auth.userId}`,
 					{
+						method: "GET",
 						headers: {
 							Authorization: `Bearer ${auth.accessToken}`,
 						},

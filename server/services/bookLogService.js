@@ -1,12 +1,36 @@
 //Requiring schema for MongoDB
 const BookLog = require('../model/BookLog');
 const Book = require('../model/Book');
+const User = require('../model/User');
+const { format } = require('date-fns') ;
 
 const findActiveBookLogByUserId = async (userId) => {
-    return await BookLog.find({
+    const activeBookLog = await BookLog.find({
         userId: userId,
-        returnedAt: null //Filter for not yet returned
+        returnedAt: null // Filter for not yet returned
     }).exec();
+
+    const bookIds = activeBookLog.map(log => log.bookId);
+
+    const bookTitles = await Book.find({ _id: { $in: bookIds } }).exec();
+
+    // Build a map of bookId => book
+    const bookMap = {};
+    bookTitles.forEach(book => {
+        bookMap[book._id.toString()] = book;
+    });
+
+    const completeBookLog = activeBookLog.map(log => {
+        const book = bookMap[log.bookId.toString()];
+        
+        return {
+            title: book ? book.title : "Unknown",
+            returnDate: format(new Date(log.returnDate), 'dd/MM/yyyy'),
+            borrowedDate: format(new Date(log.createdAt), 'dd/MM/yyyy')
+        };
+    });
+
+    return completeBookLog;
 };
 
 const createBookLog = async (userId, bookIds) => {
@@ -23,8 +47,50 @@ const createBookLog = async (userId, bookIds) => {
 };
 
 const getBorrowedBooks = async () => {
-    return await BookLog.find();
-}
+    const activeBookLog = await BookLog.find({  returnedAt: null }).exec();
+
+    const userIds = activeBookLog.map(log => log.userId.toString());
+    const users = await User.find({ _id: { $in: userIds } }).exec();
+
+    const bookIds = activeBookLog.map(log => log.bookId.toString());
+    const bookTitles = await Book.find({ _id: { $in: bookIds } }).exec();
+
+    // Map books by ID for fast lookup
+    const bookMap = {};
+    bookTitles.forEach(book => {
+        bookMap[book._id.toString()] = book;
+    });
+
+    // Group logs by userId
+    const logsByUser = {};
+    activeBookLog.forEach(log => {
+        const uid = log.userId.toString();
+        if (!logsByUser[uid]) {
+            logsByUser[uid] = [];
+        }
+        logsByUser[uid].push(log);
+    });
+
+    const completeBookLog = users.map(user => {
+        const userLogs = logsByUser[user._id.toString()] || [];
+
+        return {
+            userId: user._id,
+            username: user.username,
+            books: userLogs.map(log => {
+                const book = bookMap[log.bookId.toString()];
+                return {
+                    bookId: log.bookId,
+                    title: book ? book.title : "Unknown",
+                    returnDate: log.returnDate ? format(new Date(log.returnDate), 'dd/MM/yyyy') : null,
+                    borrowedDate: format(new Date(log.createdAt), 'dd/MM/yyyy')
+                };
+            })
+        };
+    });
+
+    return completeBookLog;
+};
 
 const returnBook = async (userId, bookId) => {
 

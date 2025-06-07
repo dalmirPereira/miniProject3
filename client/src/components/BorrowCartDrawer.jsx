@@ -16,15 +16,14 @@ export default function BorrowCartDrawer({ open, onClose }) {
 	//Send Borrowed books to API
 	const handleConfirm = async () => {
 		try {
-			const res = await fetch("http://localhost:3000/booklog", {
+			const res = await fetch(`http://localhost:3000/user/${auth.userId}`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${auth.accessToken}`,
 				},
 				body: JSON.stringify({
-					username: auth.username,
-					books: cartItems,
+					bookIds: cartItems
 				}),
 			});
 

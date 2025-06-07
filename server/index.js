@@ -63,18 +63,8 @@ app.use(verifyJWT);
 app.use('/user', verifyRoles(ROLES_LIST.User), require('./routes/userRoutes'));
 //app.use('/admin', require('./routes/adminRoutes'));
 app.use('/admin', verifyRoles(ROLES_LIST.Admin), require('./routes/adminRoutes'));
-
-//app.use('/dashboard', require('./routes/dashboardRoute'));
-app.use(
-	"/admin",
-	verifyRoles(ROLES_LIST.Admin),
-	require("./routes/bookRoutes")
-);
 //app.use('/admin', require('./routes/bookRoutes'));
-
-//public route for browsing books
-app.use("/books", require("./routes/publicBookRoutes"));
-
+app.use('/books', verifyRoles(ROLES_LIST.Admin, ROLES_LIST.User), require('./routes/bookRoute'));
 
 //custom error handler
 app.use(errorHandler);

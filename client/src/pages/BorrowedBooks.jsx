@@ -18,10 +18,11 @@ export default function BorrowedBooks() {
 	const [borrowedData, setBorrowedData] = useState([]);
 	const [error, setError] = useState(null);
 
-	useEffect(() => {
-		const fetchAllBorrowLogs = async () => {
+	const fetchAllBorrowLogs = async () => {
 			try {
-				const res = await fetch("http://localhost:3001/booklog/all", {
+				const res = await fetch("http://localhost:3000/admin/returns", 
+				{
+					method: "GET",
 					headers: {
 						Authorization: `Bearer ${auth.accessToken}`,
 					},
@@ -34,48 +35,36 @@ export default function BorrowedBooks() {
 				console.error("Fetch error:", err);
 				setError(err.message);
 			}
-		};
+	};
 
+	useEffect(() => {
 		if (auth?.accessToken) {
 			fetchAllBorrowLogs();
 		}
-	}, [auth]);
+	}, []);
 
 	const handleReturn = async (memberId, bookId) => {
 		try {
-			const res = await fetch("http://localhost:3001/booklog/return", {
-				method: "POST",
+			const res = await fetch(`http://localhost:3000/admin/returns/${memberId}`, {
+				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${auth.accessToken}`,
 				},
-				body: JSON.stringify({ userId: memberId, bookId }),
+				body: JSON.stringify({ bookId }),
 			});
-
+			
 			const data = await res.json();
 			if (!res.ok) throw new Error(data.message || "Failed to return book.");
 
 			alert("Book returned successfully!");
-
-			// Refresh borrow logs
-			setBorrowedData((prev) =>
-				prev
-					.map((member) =>
-						member.memberId === memberId
-							? {
-									...member,
-									books: member.books.filter((book) => book.id !== bookId),
-							  }
-							: member
-					)
-					.filter((member) => member.books.length > 0)
-			);
+			fetchAllBorrowLogs();
 		} catch (err) {
 			console.error("Return failed:", err);
 			setError(err.message);
 		}
 	};
-
+	
 	return (
 		<Box
 			display="flex"
@@ -87,13 +76,13 @@ export default function BorrowedBooks() {
 
 			{borrowedData.map((member) => (
 				<Card
-					key={member.memberId}
+					key={member.userId}
 					elevation={3}
 					sx={{ backgroundColor: "#f5ebdd" }}
 				>
 					<CardContent>
 						<Typography variant="h5" gutterBottom>
-							{member.name}
+							{member.username}
 						</Typography>
 						<Table sx={{ backgroundColor: "white" }}>
 							<TableHead>
@@ -114,7 +103,7 @@ export default function BorrowedBooks() {
 							</TableHead>
 							<TableBody>
 								{member.books.map((book) => (
-									<TableRow key={book.id}>
+									<TableRow key={book.bookId}>
 										<TableCell>{book.title}</TableCell>
 										<TableCell>{book.borrowedDate}</TableCell>
 										<TableCell>{book.returnDate}</TableCell>
@@ -122,7 +111,7 @@ export default function BorrowedBooks() {
 											<Button
 												variant="contained"
 												color="primary"
-												onClick={() => handleReturn(member.memberId, book.id)}
+												onClick={() => handleReturn(member.userId, book.bookId)}
 											>
 												Return
 											</Button>

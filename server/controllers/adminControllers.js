@@ -2,18 +2,6 @@
 const { findBook, updateBookById, getBooks, createBook, deleteBookById } = require('../services/bookService')
 const { getBorrowedBooks, returnBook } = require('../services/bookLogService')
 
-//---------------------------------BOOK LIST-------------------------------------------------------
-const handleBookList = async (req, res) => {
-    try {
-        const books = await getBooks();
-        res.json(books);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-//--------------------------------------------------------------------------------------------------
-
-
 //---------------------------------REGISTER NEW BOOK-------------------------------------------------------
 const handleNewBook = async (req, res) => {
     //get user and password form client
@@ -152,11 +140,11 @@ const handleReturnBook = async (req, res) => {
     const { userId } = req.params;
     if (!userId) return res.status(400).json({ message: `User ID didn't receive.` }); //Conflict 
 
-    const { bookIds } = req.body;
-
+    const { bookId } = req.body;
+ console.log("book", bookId)
    // find which fields are missing or empty
     const newBookLog = {
-        bookIds
+        bookId
     };
 
     const missingFields = Object.entries(newBookLog)
@@ -176,7 +164,7 @@ const handleReturnBook = async (req, res) => {
 
     try {
         //return book:
-        const result = await returnBook(userId, bookIds);
+        const result = await returnBook(userId, bookId);
         
         console.log(result);
 
@@ -189,7 +177,6 @@ const handleReturnBook = async (req, res) => {
 //--------------------------------------------------------------------------------------------------
 
 module.exports = { 
-    handleBookList,
     handleNewBook,
     handleUpdateBook,
     handleDeleteBook,

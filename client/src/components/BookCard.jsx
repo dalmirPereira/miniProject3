@@ -14,7 +14,7 @@ import EditBookModal from "./EditBookModal";
 
 export default function BookCard({ book }) {
 	const { userRole } = useAuth();
-	const { dispatch } = useCart();
+	const { dispatch, cartItems } = useCart();
 	const { deleteBook, updateBook } = useBooks();
 	const [editing, setEditing] = useState(false);
 
@@ -128,10 +128,16 @@ export default function BookCard({ book }) {
 									backgroundColor: "white",
 								}}
 								onClick={handleBorrow}
-								disabled={!book.available}
+								disabled={!book.available || cartItems.find(item => item._id === book._id)}
 								color={book.available ? "primary" : "warning"}
 							>
-								{book.available ? "Borrow" : "Unavailable"}
+								{book.available ? (
+									cartItems.find(item => item._id === book._id)
+										? "On Cart"
+										: "Borrow"
+								) : (
+									"Unavailable"
+								)}
 							</Button>
 						</Box>
 					)}
@@ -147,10 +153,16 @@ export default function BookCard({ book }) {
 									backgroundColor: "white",
 								}}
 								onClick={handleClick}
-								disabled={!book.available}
+								disabled={!book.available || cartItems.find(item => item._id === book._id)}
 								color={book.available ? "primary" : "warning"}
 							>
-								{book.available ? "Borrow" : "Unavailable"}
+								{book.available ? (
+									cartItems.find(item => item._id === book._id)
+										? "On Cart"
+										: "Borrow"
+								) : (
+									"Unavailable"
+								)}
 							</Button>
 						</Box>
 					)}

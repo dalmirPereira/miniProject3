@@ -40,6 +40,7 @@ const handleLogin = async (req, res) => {
         const payload = { 
             "UserInfo": {
                 "username": foundUser.username,
+                "userId": foundUser._id,
                 "roles": roles
             } 
         };
