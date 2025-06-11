@@ -1,14 +1,11 @@
-import "./App.css";
-
-import { AuthProvider } from "./contex/AuthenticationContex/AuthContext";
-import AppRoutes from "./routes/AppRoutes"
+import AppRouter from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <>
-      <AppRoutes />
-    </>
-  );
+	return (
+		<>
+			<AppRouter></AppRouter>
+		</>
+	);
 }
 
 export default App;

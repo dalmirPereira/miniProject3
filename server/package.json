@@ -1,5 +1,5 @@
 {
-  "name": "miniproject1",
+  "name": "miniproject3-library",
   "version": "1.0.0",
   "description": "Mini project 1 is about displaying data list on page and make HTTP request to API to update data on API side.",
   "homepage": "https://github.com/dalmirPereira/miniProject1#readme",
@@ -19,9 +19,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
-    "nodemon": "^3.1.9"
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.15.1",
+    "nodemon": "^3.1.9",
+    "uuid": "^11.1.0"
   }
 }
